@@ -4,35 +4,43 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin: 0;
-    padding: 20px;
+    padding: 4vh 20px;
     min-height: 100vh;
 }
 
 h1 {
-    margin-bottom: 5px;
+    font-size: min(2.2rem, 6.5vw);
+    margin-bottom: min(5px, 1.5vw); /* Caps at 5px on desktop, shrinks smaller on phone */
     color: #2c3e50;
+    text-align: center;
 }
 
 #status {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
+    font-size: min(1.2rem, 3.5vw);
+    margin-bottom: min(20px, 5vw); /* Caps at 20px on desktop, scales down seamlessly on phone */
     font-weight: 600;
     color: #34495e;
-    height: 30px;
+    height: auto;
 }
 
 /* The Main 9x9 Grid System */
+/* The Main 9x9 Grid System - Now fully responsive */
 .ultimate-board {
     display: grid;
-    grid-template-columns: repeat(9, 60px);
-    grid-template-rows: repeat(9, 60px);
+    grid-template-columns: repeat(9, 1fr); /* Uses fractional units instead of fixed 60px */
+    grid-template-rows: repeat(9, 1fr);
+    width: 92vw; /* Takes up 92% of the phone screen width */
+    max-width: 500px; /* Won't get too big on laptops */
+    aspect-ratio: 1 / 1; /* Keeps the board a perfect square */
     background-color: #fff;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     border-radius: 8px;
     overflow: hidden;
-    border: 4px solid #2c3e50; /* Thick outer border */
+    border: 4px solid #2c3e50;
+    touch-action: manipulation; /* FIX: Stops the annoying 300ms double-tap zoom delay on phones */
+    container-type: inline-size;
 }
 
 /* Base styling for every single cell */
@@ -40,14 +48,15 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 5.5cqw; /* Font sizes scale naturally with the screen size */
     font-weight: bold;
     cursor: pointer;
     user-select: none;
     background-color: #fff;
     transition: background-color 0.2s;
-    border: 1px solid #bdc3c7; /* Normal thin cell dividers */
+    border: 1px solid #bdc3c7;
 }
+
 
 /* --- THE 3x3 BLOCK BORDER LOGIC --- */
 
@@ -73,9 +82,18 @@ h1 {
     background-color: #d1f2eb;
 }
 
-/* Visual markers for X and O moves */
-.cell.X { color: #e74c3c; }
-.cell.O { color: #3498db; }
+
+/* Soft red background for individual X moves */
+.cell.X { 
+    color: #e74c3c; 
+    background-color: #fdebd0; 
+} 
+
+/* Soft blue background for individual O moves */
+.cell.O { 
+    color: #3498db; 
+    background-color: #ebf5fb; 
+}
 
 /* Styles for local boards that have been won/tied */
 .cell.won-X { background-color: #fadbd8 !important; color: #e74c3c; opacity: 0.6; }
@@ -99,14 +117,25 @@ h1 {
     background-color: #34495e;
 }
 
-/* Soft red background for individual X moves */
-.cell.X { 
-    color: #e74c3c; 
-    background-color: #fdebd0; 
-} 
+/* --- MOBILE OPTIMIZATIONS (Applies only to screens under 600px wide) --- */
+@media (max-width: 600px) {
+    body {
+      padding: 10px; /* Reduces space around edge of screen */
+    }
 
-/* Soft blue background for individual O moves */
-.cell.O { 
-    color: #3498db; 
-    background-color: #ebf5fb; 
+    /* Makes the restart button fit comfortably below the board */
+    #reset-btn {
+        margin-top: 15px;
+        padding: min(12px, 3vw) min(24px, 6vw); /* Dynamically shrinks padding on small screens */
+        font-size: min(1rem, 4vw);
+        width: 80%; /* Makes the tap target wider and easier to hit */
+        max-width: 250px;
+    }
+    
+    /* Optional: Fixes your home link position on mobile if needed */
+    body > p {
+        font-size: min(1rem, 4vw);
+        margin-top: min(5px, 1.5vw);    /* Caps at 5px on big screens, shrinks on small screens */
+        margin-bottom: min(5px, 1.5vw); /* Caps at 5px on big screens, shrinks on small screens */
+    }
 }
